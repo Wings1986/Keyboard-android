@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="utf-8"?>
+<!--
+/*
+**
+** Copyright 2019, by iGold
+**
+*/
+-->
+
+<selector xmlns:android="http://schemas.android.com/apk/res/android">
+    <item
+        android:state_focused="true"
+        android:drawable="@drawable/cat5_key_sel" />
+    <item
+        android:state_pressed="true"
+        android:drawable="@drawable/cat5_key_sel" />
+    <item
+        android:state_selected="true"
+        android:drawable="@drawable/cat5_key_sel" />
+    <item
+        android:drawable="@drawable/cat5_key" />
+</selector>

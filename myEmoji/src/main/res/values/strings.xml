@@ -1,0 +1,11 @@
+<resources>
+    <string name="app_name">Emojicon</string>
+
+    <string name="recent">HISTORY</string>
+    <string name="aunties">AUNTIES &amp; UNCLES</string>
+    <string name="activities">ACTIVITIES</string>
+    <string name="food">FOOD &amp; DRINK</string>
+    <string name="objects">OBJECTS</string>
+    <string name="travel">TRAVEL &amp; PLACES</string>
+
+</resources>

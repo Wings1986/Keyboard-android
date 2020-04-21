@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+<resources xmlns:xliff="urn:oasis:names:tc:xliff:document:1.2">
+
+    <string name="app_name">Communiji</string>
+
+    <string name="main_choose_keyboard">1. Enable Communiji Keyboard</string>
+    <string name="main_switch_keyboard">2. Switch to Comuniji Keyboard</string>
+    <string name="main_go_setting_keyboard">Completed!</string>
+
+</resources>

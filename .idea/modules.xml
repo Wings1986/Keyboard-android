@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<project version="4">
+  <component name="ProjectModuleManager">
+    <modules>
+      <module fileurl="file://$PROJECT_DIR$/Keyboard-android.iml" filepath="$PROJECT_DIR$/Keyboard-android.iml" group="Keyboard-android" />
+      <module fileurl="file://$PROJECT_DIR$/myEmoji/myEmoji.iml" filepath="$PROJECT_DIR$/myEmoji/myEmoji.iml" group="Keyboard-android/myEmoji" />
+      <module fileurl="file://$PROJECT_DIR$/myIME/myIME.iml" filepath="$PROJECT_DIR$/myIME/myIME.iml" group="Keyboard-android/myIME" />
+    </modules>
+  </component>
+</project>
