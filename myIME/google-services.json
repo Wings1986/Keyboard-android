@@ -1,0 +1,47 @@
+{
+  "project_info": {
+    "project_number": "331744075049",
+    "firebase_url": "https://communiji-test.firebaseio.com",
+    "project_id": "communiji-test",
+    "storage_bucket": "communiji-test.appspot.com"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:331744075049:android:df2e26f5f38e5f0ad06b38",
+        "android_client_info": {
+          "package_name": "com.hbconsulting.communiji"
+        }
+      },
+      "oauth_client": [
+        {
+          "client_id": "331744075049-6drg04k3nnmar9nqvjjmoep001u3dmid.apps.googleusercontent.com",
+          "client_type": 3
+        }
+      ],
+      "api_key": [
+        {
+          "current_key": "AIzaSyDmuut9KSa-S9B8ovQMxgLPnVLE16V-n3c"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": [
+            {
+              "client_id": "331744075049-6drg04k3nnmar9nqvjjmoep001u3dmid.apps.googleusercontent.com",
+              "client_type": 3
+            },
+            {
+              "client_id": "331744075049-oq7ltnfl607palhcke8ee3i4bplnrsa6.apps.googleusercontent.com",
+              "client_type": 2,
+              "ios_info": {
+                "bundle_id": "com.hbconsulting.communiji"
+              }
+            }
+          ]
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}

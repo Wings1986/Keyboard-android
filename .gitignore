@@ -1,0 +1,19 @@
+build/
+*.gradle/
+*.idea/
+*.DS_Store
+IME/build/
+myEmoji/build/
+
+### Gradle ###
+.gradle
+/build/
+
+# Android Studio
+.idea
+build/
+cache.properties.lock
+.idea/workspace.xml
+*.iws
+.gradle/
+**/.gradle/

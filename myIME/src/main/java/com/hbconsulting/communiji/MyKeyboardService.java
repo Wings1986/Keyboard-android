@@ -17,9 +17,15 @@ package com.hbconsulting.communiji;
 
 import android.annotation.SuppressLint;
 
+import android.app.ActivityManager;
 import android.app.AppOpsManager;
+import android.app.usage.UsageStats;
+import android.app.usage.UsageStatsManager;
+import android.content.ClipData;
 import android.content.ClipDescription;
+import android.content.ClipboardManager;
 import android.content.ContentResolver;
+import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -32,7 +38,9 @@ import android.inputmethodservice.InputMethodService;
 import android.media.AudioManager;
 import android.net.Uri;
 import android.os.Build;
+import android.os.Bundle;
 import android.os.Vibrator;
+import android.provider.MediaStore;
 import android.util.Log;
 
 import android.view.KeyEvent;
@@ -43,6 +51,7 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputBinding;
 import android.view.inputmethod.InputConnection;
+import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -53,6 +62,7 @@ import androidx.core.view.inputmethod.EditorInfoCompat;
 import androidx.core.view.inputmethod.InputConnectionCompat;
 import androidx.core.view.inputmethod.InputContentInfoCompat;
 
+import com.google.firebase.analytics.FirebaseAnalytics;
 import com.hbconsulting.emojicon.EmojiconGridView.OnEmojiconClickedListener;
 import com.hbconsulting.emojicon.EmojiconsPopup;
 import com.hbconsulting.emojicon.EmojiconsPopup.OnEmojiconBackspaceClickedListener;
@@ -64,6 +74,10 @@ import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Iterator;
+import java.util.List;
+import java.util.SortedMap;
+import java.util.TreeMap;
 
 
 /**
@@ -85,6 +99,10 @@ public class MyKeyboardService extends InputMethodService {
 
 
 	File imagesDir;
+	boolean imgSupported = false;
+
+	private FirebaseAnalytics mFirebaseAnalytics;
+
 
 	@Override
 	public void onCreate() {
@@ -92,6 +110,7 @@ public class MyKeyboardService extends InputMethodService {
 		
 		Log.e("MykeyboardServiece", "onCreate +++++++++++");
 
+		mFirebaseAnalytics = FirebaseAnalytics.getInstance(this);
 
 		imagesDir = new File(getFilesDir(), "images");
 		imagesDir.mkdirs();
@@ -139,7 +158,17 @@ public class MyKeyboardService extends InputMethodService {
 
 				File mPngFile = getFileForResource(getApplicationContext(), emojicon.getEmoji(), imagesDir, "image.png");
 //				File mPngFile = getFileForRaw(this, R.raw.act7, imagesDir, "image.png");
-				doCommitContent("A droid logo", "image/png", mPngFile);
+
+				if (imgSupported)
+					doCommitContent("A droid logo", "image/png", mPngFile);
+				else
+					doCopyContent("A droid logo", "image/png", mPngFile);
+
+				Bundle bundle = new Bundle();
+				bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "android-keyboard");
+				bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "emoji");
+				bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
+				mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
 
 			}
 		});
@@ -190,14 +219,14 @@ public class MyKeyboardService extends InputMethodService {
 		String[] mimeTypes = EditorInfoCompat.getContentMimeTypes(info);
 
 
-		boolean gifSupported = false;
+
 		for (String mimeType : mimeTypes) {
 			if (ClipDescription.compareMimeTypes(mimeType, "image/png")) {
-				gifSupported = true;
+				imgSupported = true;
 			}
 		}
 
-		if (gifSupported) {
+		if (imgSupported) {
 			// the target editor supports GIFs. enable corresponding content
 			Log.e("MyKeyboardService", "support PNG ========================");
 		} else {
@@ -268,6 +297,128 @@ public class MyKeyboardService extends InputMethodService {
 		}
 		InputConnectionCompat.commitContent(
 				inputConnection, editorInfo, inputContentInfo, flags, null);
+	}
+
+	private void doCopyContent(@NonNull String description, @NonNull String mimeType,
+								 @NonNull File file) {
+		final EditorInfo editorInfo = getCurrentInputEditorInfo();
+
+		// Validate packageName again just in case.
+		if (!validatePackageName(editorInfo)) {
+			return;
+		}
+
+		final Uri contentUri = FileProvider.getUriForFile(this, AUTHORITY, file);
+
+		final int flag;
+		if (Build.VERSION.SDK_INT >= 25) {
+			// On API 25 and later devices, as an analogy of Intent.FLAG_GRANT_READ_URI_PERMISSION,
+			// you can specify InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION to give
+			// a temporary read access to the recipient application without exporting your content
+			// provider.
+			flag = InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION;
+		} else {
+			// On API 24 and prior devices, we cannot rely on
+			// InputConnectionCompat.INPUT_CONTENT_GRANT_READ_URI_PERMISSION. You as an IME author
+			// need to decide what access control is needed (or not needed) for content URIs that
+			// you are going to expose. This sample uses Context.grantUriPermission(), but you can
+			// implement your own mechanism that satisfies your own requirements.
+			flag = 0;
+			try {
+				// TODO: Use revokeUriPermission to revoke as needed.
+				grantUriPermission(
+						editorInfo.packageName, contentUri, Intent.FLAG_GRANT_READ_URI_PERMISSION);
+			} catch (Exception e){
+				Log.e(TAG, "grantUriPermission failed packageName=" + editorInfo.packageName
+						+ " contentUri=" + contentUri, e);
+			}
+		}
+
+//		ContentValues values = new ContentValues(2);
+//		values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+//		values.put(MediaStore.Images.Media.DATA, file.getAbsolutePath());
+//		ContentResolver theContent = getContentResolver();
+//		Uri  imageUri = theContent.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+
+
+//		ClipData theClip = ClipData.newUri(getContentResolver(),description, contentUri);
+//		ClipboardManager clipboard = (android.content.ClipboardManager)getSystemService(Context.CLIPBOARD_SERVICE);
+//		clipboard.setPrimaryClip(theClip);
+
+/*
+		ClipboardManager mClipboard = (ClipboardManager) getSystemService(Context.CLIPBOARD_SERVICE);
+		ContentValues values = new ContentValues(2);
+		values.put(MediaStore.Images.Media.MIME_TYPE, "image/png");
+		values.put(MediaStore.Images.Media.DATA,  "file://"+file.getAbsoluteFile());
+
+		ContentResolver theContent = getContentResolver();
+		Uri imageUri = theContent.insert(MediaStore.Images.Media.EXTERNAL_CONTENT_URI, values);
+		ClipData theClip = ClipData.newUri(getContentResolver(), "Image", imageUri);
+		mClipboard.setPrimaryClip(theClip);
+
+		Toast.makeText(this, "Copied to clipboard successfully", Toast.LENGTH_SHORT).show();
+
+ */
+		//getPackageRunningApp();
+		//printForegroundTask();
+
+		Intent intent = new Intent(Intent.ACTION_SEND);
+		intent.setType("image/*");
+		intent.putExtra(Intent.EXTRA_STREAM, contentUri);
+		intent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+
+		intent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+		Intent chooserIntent = Intent.createChooser(intent, "Open With");
+		chooserIntent.addFlags(Intent.FLAG_ACTIVITY_NEW_TASK);
+		chooserIntent.addFlags(Intent.FLAG_GRANT_WRITE_URI_PERMISSION|Intent.FLAG_GRANT_READ_URI_PERMISSION);
+		startActivity(chooserIntent);
+
+	}
+	private void getPackageRunningApp() {
+		ActivityManager am = (ActivityManager) getSystemService(Context.ACTIVITY_SERVICE);
+		List<ActivityManager.RunningAppProcessInfo> runningProcesses = am.getRunningAppProcesses();
+		for (ActivityManager.RunningAppProcessInfo processInfo : runningProcesses) {
+
+			Log.e("iGold", "processInfo.processName = " + processInfo.processName);
+
+			if (processInfo.importance == ActivityManager.RunningAppProcessInfo.IMPORTANCE_FOREGROUND) {
+				for (String activeProcess : processInfo.pkgList) {
+
+					Log.e("iGold", activeProcess);
+//					if (activeProcess.equals(context.getPackageName())) {
+//						//If your app is the process in foreground, then it's not in running in background
+//						return false;
+//					}
+				}
+			}
+		}
+
+	}
+
+	private String printForegroundTask() {
+		String currentApp = "NULL";
+		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+			UsageStatsManager usm = (UsageStatsManager)this.getSystemService("usagestats");
+			long time = System.currentTimeMillis();
+			List<UsageStats> appList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,  time - 1000*1000, time);
+			if (appList != null && appList.size() > 0) {
+				SortedMap<Long, UsageStats> mySortedMap = new TreeMap<Long, UsageStats>();
+				for (UsageStats usageStats : appList) {
+					mySortedMap.put(usageStats.getLastTimeUsed(), usageStats);
+				}
+				if (mySortedMap != null && !mySortedMap.isEmpty()) {
+					currentApp = mySortedMap.get(mySortedMap.lastKey()).getPackageName();
+				}
+			}
+		} else {
+			ActivityManager am = (ActivityManager)this.getSystemService(Context.ACTIVITY_SERVICE);
+			List<ActivityManager.RunningAppProcessInfo> tasks = am.getRunningAppProcesses();
+			currentApp = tasks.get(0).processName;
+		}
+
+		Log.e("adapter", "Current App in foreground is: " + currentApp);
+		return currentApp;
 	}
 
 	private void doCommitContent(@NonNull String description, @NonNull String mimeType,
