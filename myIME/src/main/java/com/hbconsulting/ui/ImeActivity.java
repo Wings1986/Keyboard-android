@@ -51,7 +51,7 @@ public class ImeActivity extends Activity {
         btnFacebook.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com"));
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.facebook.com/Communiji-101834561512764"));
 				startActivity(browserIntent);
 			}
 		});
@@ -60,7 +60,16 @@ public class ImeActivity extends Activity {
 		btnInstagram.setOnClickListener(new OnClickListener() {
 			@Override
 			public void onClick(View v) {
-				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.instagram.com"));
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://instagram.com/communiji?igshid=1h7ahm2r1iqd"));
+				startActivity(browserIntent);
+			}
+		});
+
+		Button btnLinked = findViewById(R.id.btn_linked);
+		btnLinked.setOnClickListener(new OnClickListener() {
+			@Override
+			public void onClick(View v) {
+				Intent browserIntent = new Intent(Intent.ACTION_VIEW, Uri.parse("https://www.linkedin.com/company/communiji"));
 				startActivity(browserIntent);
 			}
 		});

@@ -167,8 +167,8 @@ public class MyKeyboardService extends InputMethodService {
 				Bundle bundle = new Bundle();
 				bundle.putString(FirebaseAnalytics.Param.ITEM_ID, "android-keyboard");
 				bundle.putString(FirebaseAnalytics.Param.ITEM_NAME, "emoji");
-				bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, "image");
-				mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.SELECT_CONTENT, bundle);
+				bundle.putString(FirebaseAnalytics.Param.CONTENT_TYPE, emojicon.getCategory());
+				mFirebaseAnalytics.logEvent(FirebaseAnalytics.Event.VIEW_ITEM, bundle);
 
 			}
 		});

@@ -56,7 +56,14 @@
             android:id="@+id/btn_in"
             android:layout_width="40dp"
             android:layout_height="40dp"
+            android:layout_marginRight="20dp"
             android:background="@drawable/btn_instagram1" />
+
+        <Button
+            android:id="@+id/btn_linked"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:background="@drawable/btn_linkedin" />
     </LinearLayout>
 
 </FrameLayout>

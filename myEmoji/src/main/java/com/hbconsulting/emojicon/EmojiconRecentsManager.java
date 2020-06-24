@@ -89,7 +89,9 @@ public class EmojiconRecentsManager extends ArrayList<Emojicon> {
         StringTokenizer tokenizer = new StringTokenizer(str, "~");
         while (tokenizer.hasMoreTokens()) {
             try {
-            	add(new Emojicon(tokenizer.nextToken()));
+                String token = tokenizer.nextToken();
+                String[] splite = token.split(",");
+            	add(new Emojicon(splite[0].trim(), splite[1].trim()));
             }
             catch (NumberFormatException e) {
                 // ignored
@@ -102,7 +104,7 @@ public class EmojiconRecentsManager extends ArrayList<Emojicon> {
         int c = size();
         for (int i = 0; i < c; i++) {
             Emojicon e = get(i);
-            str.append("" + e.getEmoji());
+            str.append("" + e.getEmoji() + "," + e.getCategory());
             if (i < (c - 1)) {
                 str.append('~');
             }

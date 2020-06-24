@@ -1,38 +1,38 @@
 {
   "project_info": {
-    "project_number": "331744075049",
-    "firebase_url": "https://communiji-test.firebaseio.com",
-    "project_id": "communiji-test",
-    "storage_bucket": "communiji-test.appspot.com"
+    "project_number": "216439289277",
+    "firebase_url": "https://communiji-ac8dc.firebaseio.com",
+    "project_id": "communiji-ac8dc",
+    "storage_bucket": "communiji-ac8dc.appspot.com"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:331744075049:android:df2e26f5f38e5f0ad06b38",
+        "mobilesdk_app_id": "1:216439289277:android:52eff63f625c02d01d0ed4",
         "android_client_info": {
           "package_name": "com.hbconsulting.communiji"
         }
       },
       "oauth_client": [
         {
-          "client_id": "331744075049-6drg04k3nnmar9nqvjjmoep001u3dmid.apps.googleusercontent.com",
+          "client_id": "216439289277-0clcovtftqqe2kqg76h0gopshj2vgmth.apps.googleusercontent.com",
           "client_type": 3
         }
       ],
       "api_key": [
         {
-          "current_key": "AIzaSyDmuut9KSa-S9B8ovQMxgLPnVLE16V-n3c"
+          "current_key": "AIzaSyDeoOcxmZif3IvpWsRta86_j6OYitFgMmw"
         }
       ],
       "services": {
         "appinvite_service": {
           "other_platform_oauth_client": [
             {
-              "client_id": "331744075049-6drg04k3nnmar9nqvjjmoep001u3dmid.apps.googleusercontent.com",
+              "client_id": "216439289277-0clcovtftqqe2kqg76h0gopshj2vgmth.apps.googleusercontent.com",
               "client_type": 3
             },
             {
-              "client_id": "331744075049-oq7ltnfl607palhcke8ee3i4bplnrsa6.apps.googleusercontent.com",
+              "client_id": "216439289277-a3rj1blgu9ceu3ksrv7ke0ui1vqdpibp.apps.googleusercontent.com",
               "client_type": 2,
               "ios_info": {
                 "bundle_id": "com.hbconsulting.communiji"
