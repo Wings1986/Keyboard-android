@@ -21,11 +21,8 @@ import android.app.ActivityManager;
 import android.app.AppOpsManager;
 import android.app.usage.UsageStats;
 import android.app.usage.UsageStatsManager;
-import android.content.ClipData;
 import android.content.ClipDescription;
-import android.content.ClipboardManager;
 import android.content.ContentResolver;
-import android.content.ContentValues;
 import android.content.Context;
 import android.content.Intent;
 import android.content.pm.PackageManager;
@@ -40,7 +37,6 @@ import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.os.Vibrator;
-import android.provider.MediaStore;
 import android.util.Log;
 
 import android.view.KeyEvent;
@@ -51,7 +47,6 @@ import android.view.View;
 import android.view.inputmethod.EditorInfo;
 import android.view.inputmethod.InputBinding;
 import android.view.inputmethod.InputConnection;
-import android.widget.Toast;
 
 
 import androidx.annotation.NonNull;
@@ -65,16 +60,16 @@ import androidx.core.view.inputmethod.InputContentInfoCompat;
 import com.google.firebase.analytics.FirebaseAnalytics;
 import com.hbconsulting.emojicon.EmojiconGridView.OnEmojiconClickedListener;
 import com.hbconsulting.emojicon.EmojiconsPopup;
-import com.hbconsulting.emojicon.EmojiconsPopup.OnEmojiconBackspaceClickedListener;
+import com.hbconsulting.emojicon.EmojiconsPopup.OnEmojiconFuncKeyClickedListener;
 
 import com.hbconsulting.emojicon.emoji.Emojicon;
+import com.hbconsulting.utils.SoftKeyboard;
 
 import java.io.File;
 import java.io.FileOutputStream;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Iterator;
 import java.util.List;
 import java.util.SortedMap;
 import java.util.TreeMap;
@@ -104,6 +99,9 @@ public class MyKeyboardService extends InputMethodService {
 	private FirebaseAnalytics mFirebaseAnalytics;
 
 
+	EmojiconsPopup emoticonView;
+	SoftKeyboard softKeyboard;
+
 	@Override
 	public void onCreate() {
 		super.onCreate();
@@ -123,7 +121,7 @@ public class MyKeyboardService extends InputMethodService {
 	public void onInitializeInterface() {
 
 		Log.e("MykeyboardServiece", "onInitializeInterface +++++++++++");
-		
+
 	}
 
 	
@@ -139,8 +137,9 @@ public class MyKeyboardService extends InputMethodService {
 		
 		Log.e("MyKeyboardService", "onCreateInputView ===============");
 
+		final MyKeyboardService ims = this;
 
-		EmojiconsPopup emoticonView = (EmojiconsPopup) getLayoutInflater().inflate(R.layout.emojicons, null);
+		emoticonView = (EmojiconsPopup) getLayoutInflater().inflate(R.layout.emojicons, null);
 
 		emoticonView.setView(1);
 
@@ -172,7 +171,7 @@ public class MyKeyboardService extends InputMethodService {
 
 			}
 		});
-		emoticonView.setOnEmojiconBackspaceClickedListener(new OnEmojiconBackspaceClickedListener() {
+		emoticonView.setOnEmojiconFunKeyClickedListener(new OnEmojiconFuncKeyClickedListener() {
 
 			@Override
 			public void onEmojiconBackspaceClicked(View v) {
@@ -182,6 +181,18 @@ public class MyKeyboardService extends InputMethodService {
 						new KeyEvent(KeyEvent.ACTION_DOWN, KeyEvent.KEYCODE_DEL));
 				getCurrentInputConnection().sendKeyEvent(
 						new KeyEvent(KeyEvent.ACTION_UP, KeyEvent.KEYCODE_DEL));
+			}
+
+			@Override
+			public void onEmojiconEngClicked(View v) {
+				sound();
+
+				softKeyboard = new SoftKeyboard(ims);
+				softKeyboard.onCreate();
+				softKeyboard.onInitializeInterface();
+
+				View softView = softKeyboard.onCreateInputView();
+				setInputView(softView);
 			}
 		});
 
@@ -399,7 +410,7 @@ public class MyKeyboardService extends InputMethodService {
 	private String printForegroundTask() {
 		String currentApp = "NULL";
 		if(Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-			UsageStatsManager usm = (UsageStatsManager)this.getSystemService("usagestats");
+			@SuppressLint("WrongConstant") UsageStatsManager usm = (UsageStatsManager)this.getSystemService("usagestats");
 			long time = System.currentTimeMillis();
 			List<UsageStats> appList = usm.queryUsageStats(UsageStatsManager.INTERVAL_DAILY,  time - 1000*1000, time);
 			if (appList != null && appList.size() > 0) {
@@ -628,5 +639,29 @@ public class MyKeyboardService extends InputMethodService {
 		this.mVibrator.vibrate(500);
 	}
 
+ /*
+ 	=======================================
+  */
+	public void setEmoticonView() {
+		if (emoticonView != null) {
+			setInputView(emoticonView);
+		}
+	}
+	@Override
+	public boolean onKeyDown(int keyCode, KeyEvent event) {
+
+		if (softKeyboard != null)
+			softKeyboard.onKeyDown(keyCode, event);
+
+		return super.onKeyDown(keyCode, event);
+	}
+
+	@Override
+	public boolean onKeyUp(int keyCode, KeyEvent event) {
+		if (softKeyboard != null)
+			softKeyboard.onKeyUp(keyCode, event);
+
+		return super.onKeyUp(keyCode, event);
+	}
 
 }

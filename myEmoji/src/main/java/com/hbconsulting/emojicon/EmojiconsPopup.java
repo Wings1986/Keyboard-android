@@ -48,7 +48,7 @@ public class EmojiconsPopup extends RelativeLayout implements ViewPager.OnPageCh
 	private Boolean pendingOpen = false;
 	private Boolean isOpened = false;
 	OnEmojiconClickedListener onEmojiconClickedListener;
-	OnEmojiconBackspaceClickedListener onEmojiconBackspaceClickedListener; 
+	OnEmojiconFuncKeyClickedListener onEmojiconFunKeyClickedListener;
 	OnSoftKeyboardOpenCloseListener onSoftKeyboardOpenCloseListener;
 	OnKeyboardCloseListener onKeyboardCloseListener;
 	OnKeyboardSpaceListener onKeyboardSpaceListener;
@@ -116,8 +116,8 @@ public class EmojiconsPopup extends RelativeLayout implements ViewPager.OnPageCh
 	/**
 	 * Set the listener for the event when backspace on emojicon popup is clicked
 	 */
-	public void setOnEmojiconBackspaceClickedListener(OnEmojiconBackspaceClickedListener listener){
-		this.onEmojiconBackspaceClickedListener = listener;
+	public void setOnEmojiconFunKeyClickedListener(OnEmojiconFuncKeyClickedListener listener){
+		this.onEmojiconFunKeyClickedListener = listener;
 	}
 
 	public void setOnKeyboardCloseListener(OnKeyboardCloseListener listener){
@@ -284,8 +284,17 @@ public class EmojiconsPopup extends RelativeLayout implements ViewPager.OnPageCh
 
 			@Override
 			public void onClick(View v) {
-				if(onEmojiconBackspaceClickedListener != null)
-					onEmojiconBackspaceClickedListener.onEmojiconBackspaceClicked(v);
+				if(onEmojiconFunKeyClickedListener != null)
+					onEmojiconFunKeyClickedListener.onEmojiconBackspaceClicked(v);
+			}
+		}));
+
+		view.findViewById(R.id.emojis_abc).setOnTouchListener(new RepeatListener(1000, 50, new OnClickListener() {
+
+			@Override
+			public void onClick(View v) {
+				if(onEmojiconFunKeyClickedListener != null)
+					onEmojiconFunKeyClickedListener.onEmojiconEngClicked(v);
 			}
 		}));
 		
@@ -464,8 +473,9 @@ public class EmojiconsPopup extends RelativeLayout implements ViewPager.OnPageCh
 		}
 	}
 
-	public interface OnEmojiconBackspaceClickedListener {
+	public interface OnEmojiconFuncKeyClickedListener {
 		void onEmojiconBackspaceClicked(View v);
+		void onEmojiconEngClicked(View v);
 	}
 
 	public interface OnKeyboardCloseListener{
