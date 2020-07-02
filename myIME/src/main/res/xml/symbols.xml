@@ -142,10 +142,6 @@
             android:isSticky="true"
             android:keyIcon="@drawable/sym_keyboard_abc"
             android:keyWidth="15%p" />
-<!--        <Key-->
-<!--            android:codes="44"-->
-<!--            android:keyLabel=","-->
-<!--            android:keyWidth="13%p" />-->
         <!--
             android:codes: -101 is not a framework-defined key code but a key code that is
             privately defined in com.example.android.softkeyboard.LatinKeyboardView.
@@ -156,10 +152,14 @@
             android:keyIcon="@drawable/sym_keyboard_language_switch"
             android:keyWidth="10%p" />
         <Key
+            android:codes="44"
+            android:keyLabel=","
+            android:keyWidth="10%p" />
+        <Key
             android:codes="32"
             android:isRepeatable="true"
-            android:keyIcon="@drawable/sym_keyboard_space"
-            android:keyWidth="50%p" />
+            android:keyLabel="Communiji"
+            android:keyWidth="40%p" />
         <Key
             android:codes="46"
             android:keyLabel="."

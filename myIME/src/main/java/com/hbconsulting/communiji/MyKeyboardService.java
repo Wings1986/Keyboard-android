@@ -646,6 +646,11 @@ public class MyKeyboardService extends InputMethodService {
 		if (emoticonView != null) {
 			setInputView(emoticonView);
 		}
+
+		if (softKeyboard != null) {
+			softKeyboard = null;
+		}
+
 	}
 	@Override
 	public boolean onKeyDown(int keyCode, KeyEvent event) {

@@ -16,6 +16,8 @@ import com.hbconsulting.communiji.R;
 public class LatinKeyboard extends Keyboard {
     private Key mEnterKey;
     private Key mSpaceKey;
+    private Key mShiftKey;
+
     /**
      * Stores the current state of the mode change key. Its width will be dynamically updated to
      * match the region of {@link #mModeChangeKey} when {@link #mModeChangeKey} becomes invisible.
@@ -40,8 +42,12 @@ public class LatinKeyboard extends Keyboard {
      */
     private Key mSavedLanguageSwitchKey;
 
+    Resources mRes = null;
+
     public LatinKeyboard(Context context, int xmlLayoutResId) {
         super(context, xmlLayoutResId);
+
+        mRes = context.getResources();
     }
 
     public LatinKeyboard(Context context, int layoutTemplateResId,
@@ -51,6 +57,8 @@ public class LatinKeyboard extends Keyboard {
 
     @Override
     protected Key createKeyFromXml(Resources res, Row parent, int x, int y, XmlResourceParser parser) {
+
+
         Key key = new LatinKey(res, parent, x, y, parser);
         if (key.codes[0] == 10) {
             mEnterKey = key;
@@ -62,6 +70,8 @@ public class LatinKeyboard extends Keyboard {
         } else if (key.codes[0] == LatinKeyboardView.KEYCODE_LANGUAGE_SWITCH) {
             mLanguageSwitchKey = key;
             mSavedLanguageSwitchKey = new LatinKey(res, parent, x, y, parser);
+        } else if (key.codes[0] == -1) {
+            mShiftKey = key;
         }
         return key;
     }
@@ -123,6 +133,20 @@ public class LatinKeyboard extends Keyboard {
                 mEnterKey.label = null;
                 break;
         }
+    }
+
+    @Override
+    public boolean setShifted(boolean shiftState) {
+        if (mShiftKey != null) {
+            if (shiftState == false) {
+                mShiftKey.on = false;
+                mShiftKey.icon = mRes.getDrawable(R.drawable.sym_keyboard_shift);
+            } else {
+                mShiftKey.on = true;
+                mShiftKey.icon = mRes.getDrawable(R.drawable.sym_keyboard_shift_selected);
+            }
+        }
+        return super.setShifted(shiftState);
     }
 
     void setSpaceIcon(final Drawable icon) {
